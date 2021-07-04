@@ -1,4 +1,4 @@
-asgiref==3.3.4
+asgiref
 Django==3.2
 django-debug-toolbar==3.2.1
 django-glrm==1.1.3
