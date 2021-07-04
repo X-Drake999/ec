@@ -1,0 +1,19 @@
+{% extends 'shop/base.html' %}
+
+
+{% block content %}
+
+    {% if message is not None %}
+        <h3>{{message}}</h3>
+    {% else %}
+        <h3>変更したい商品を選択してください</h3>
+    {% endif %}
+    
+    <form method='post'>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type='submit' value='submit'>
+    </form>
+
+{% endblock content %}
+    

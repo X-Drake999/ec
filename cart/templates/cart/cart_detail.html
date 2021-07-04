@@ -1,0 +1,66 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="container-fluid">
+
+        <h4 class="my-3">{{cart.user.username}} さんのカート</h4>
+        
+        {% for item in cart_items %}
+        <div class="cart_item p-1">
+            <div class="row">
+                <div class="col-sm-4">
+                    <img src="{{item.product.image.url}}" class="cart-item-image img-fluid p-1">
+                </div>
+                <div class="col-sm-8">
+                    <a href="{%url 'shop:product_detail' item.product.pk  %}"><h4>{{item.product.name}}</h4></a>
+                    <!--<p>{{item.product.description|truncatechars:100}}</p>-->
+                    <p class="cart-item-price">{{item.product.price}} 円</p>
+                    <p class="cart-item-quantity">{{item.quantity}} 個</p>
+                    <p class="cart-item-total">小計 {{item.item_total}} 円</p>
+                    <a href="{% url 'cart:add' item.product.id %}"><button type="button" class="btn btn-secondary">+</button></a>
+                    <a href="{% url 'cart:remove' item.product.id %}"><button type="button" class="btn btn-secondary">-</button></a>
+                    <a class="js-modal-open" data-url="{% url 'cart:full_remove' item.product.id %}"><button type="button" class="btn btn-danger">削除</button></a>  
+                </div>        
+            </div>
+        </div>
+            
+        {% endfor %}
+        <a href="{% url 'cart:confirm' cart.id %}" id="purchase"><button type="button" class="btn btn-success">購入</button></a>
+        <p>合計 {{total}} 円</p>
+
+        <div class="modal js-modal">
+            <div class="modal__bg js-modal-close"></div>
+            <div class="modal__content">
+                <p>この商品をカートから削除しますか？</p>
+                <a class="js-modal-confirm" href="#">削除</a>
+                <a class="js-modal-close" href="#">閉じる</a>
+            </div><!--modal__inner-->
+        </div><!--modal-->
+
+    </div>
+{% endblock content %}
+
+
+{% block javascript %}
+
+    <script type="text/javascript">
+        // タグ内にjavascriptコードを直接記述します。
+        $(function(){
+            $('.js-modal-open').click(function(){
+                $('.modal').fadeIn();
+                var removeUrl = $(this).attr('data-url');
+                
+                $('.js-modal-confirm').attr('href', removeUrl);
+                return false;
+            });
+            $('.js-modal-close').click(function(){
+                $('.js-modal').fadeOut();
+                return false;
+            });
+
+        });
+    </script>
+
+{% endblock javascript %}
+    

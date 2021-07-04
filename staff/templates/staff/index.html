@@ -1,0 +1,12 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+    <div class="container-fluid mt-2">
+        <h1>スタッフ用ページ</h1>
+        <a href="{% url 'staff:new' %}"><button class="btn btn-primary">商品を追加</button></a>
+        <a href="{% url 'staff:edit_index' %}"><button class="btn btn-info">商品を編集</button></a>
+        <a href="{% url 'staff:unavailable' %}"><button class="btn btn-danger">商品を非表示</button></a>
+        <a href="{% url 'staff:stats' 'week' %}"><button class="btn btn-success">分析</button></a>
+    </div>
+    
+{% endblock content %}

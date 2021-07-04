@@ -1,0 +1,127 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+<div class="container-fluid mt-2">
+    <h1>分析用ページ</h1>
+    <a href="{% url 'staff:today' %}"><button class="btn btn-primary">日間</button></a>
+    <a href="{% url 'staff:stats' 'week' %}"><button class="btn btn-primary">週間</button></a>
+    <a href="{% url 'staff:stats' 'year' %}"><button class="btn btn-primary">年間</button></a>
+    
+    <div class="row">
+        <div class="col-6">
+            <div id="week-total" style="width:600px; height:400px;" class="m-5"></div>
+        </div>
+        <div class="col-6">
+            <div id="week-category" style="width:600px; height:400px;" class="m-5"></div>
+        </div>   
+    </div>
+    <div class="row">
+        <div class="col-6">
+            <div id="pie-category" style="width:600px; height:400px;" class="m-5"></div>
+        </div> 
+    </div>
+  
+        
+</div>
+
+{% endblock content %}
+
+
+{% block javascript %}
+
+<script type="text/javascript">
+    // based on prepared DOM, initialize echarts instance
+    var myChart = echarts.init(document.getElementById('week-total'));
+    // specify chart configuration item and data
+    var option = {
+        title: {
+            text: '{{message}}売上'
+        },
+        tooltip: {},
+        legend: {
+            data: ['Sales']
+        },
+        xAxis: {
+            data: {{date|safe}}
+        },
+        yAxis: {},
+        series: [{
+            name: '売上',
+            type: 'bar',
+            data: {{sales}},
+        }]
+    };
+
+    // use configuration item and data specified to show chart
+    myChart.setOption(option);
+
+    var myChart = echarts.init(document.getElementById('week-category'));
+    var option = {
+        title: {
+            text: 'カテゴリー別売上'
+        },
+        tooltip: {},
+        legend: {
+            data: ['Sales']
+        },
+        xAxis: {
+            data: {{category_list|safe}}
+        },
+        yAxis: {},
+        series: [{
+            name: '売上',
+            type: 'bar',
+            data: {{category_sales}},
+        }]
+    };
+    myChart.setOption(option);
+
+
+    var myChart = echarts.init(document.getElementById('pie-category'));
+    
+    let outer_list = [];
+    let category = {{category_list|safe}};
+    let sales = {{category_sales}};
+
+    for (let i = 0; i < category.length; i++){
+        var category_dict = {};
+        category_dict.value = sales[i];
+        category_dict.name = category[i];
+        outer_list.push(category_dict);
+    }
+    console.log(outer_list)
+
+    var option = {
+        title: {
+            text: 'カテゴリー別売上',
+            subtext: '',
+            left: 'center'
+        },
+        tooltip: {
+            trigger: 'item'
+        },
+        legend: {
+            orient: 'vertical',
+            left: 'left',
+        },
+        series: [
+            {
+                name: '売上',
+                type: 'pie',
+                radius: '50%',
+                data: outer_list,
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                }
+            }
+        ]
+    };
+myChart.setOption(option);
+</script>
+
+{% endblock javascript %}
+

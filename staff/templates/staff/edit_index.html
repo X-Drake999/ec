@@ -1,0 +1,21 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>edit index</h1>
+
+    <div class="row">
+        {% for product in products  %}
+            <div class="col-2">
+                <div class="edit-product m-1 p-1 bg-info">
+                    {{product.name}}
+                    {% if product.image %}
+                        <img src="{{product.image.url}}" class="product-image">
+                    {% endif %}
+                    <a class="divlink" href="{% url 'staff:edit_product' product.pk %}"></a>
+                </div> 
+            </div>
+        {% endfor %}
+    </div>
+</div>     
+{% endblock content %}

@@ -1,0 +1,25 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <form method="POST" novalidate>
+        {% csrf_token %}
+
+        {% for field in form %}
+                          
+            <p class="m-2">
+                {{ field.label_tag }}   {{field}} 
+
+                {% if field.label == "Description" %}
+                <button type="button" class="btn btn-secondary ms-5" id="SetDescriptionDefault">Lorem...</button>
+                {% endif %}
+            </p>
+        {% endfor %}
+            
+        <button type="submit">送信</button>
+        
+    </form>
+    <p>{{ message }}</p>
+</div>
+{% endblock content %}
+

@@ -1,0 +1,77 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+    <div class="container-fluid mt-2">
+        <h1>分析用ページ</h1>
+        <a href="{% url 'staff:today' %}"><button class="btn btn-primary">日間</button></a>
+        <a href="{% url 'staff:stats' 'week' %}"><button class="btn btn-primary">週間</button></a>
+        <a href="{% url 'staff:stats' 'year' %}"><button class="btn btn-primary">年間</button></a>
+    
+        {% if sales == 0 %}
+            <h3 class="mt-3">本日の売り上げはありません</h3>
+        {% else %}
+        <div class="row">
+            <div class="col-6">
+                <div id="today-total" style="width:600px; height:400px;" class="m-5"></div>
+            </div>
+            <div class="col-6">
+                <div id="today-category" style="width:600px; height:400px;" class="m-5"></div>
+            </div>   
+        </div>    
+        {% endif %}
+
+    </div>  
+
+{% endblock content %}
+
+
+{% block javascript %}
+
+<script type="text/javascript">
+    // based on prepared DOM, initialize echarts instance
+    var myChart = echarts.init(document.getElementById('today-total'));
+    // specify chart configuration item and data
+    var option = {
+        title: {
+            text: '本日の売上 合計 {{sales_str}}円'
+        },
+        tooltip: {},
+        legend: {
+            data: ['Sales']
+        },
+        xAxis: {
+            data: {{date|safe}}
+        },
+        yAxis: {},
+        series: [{
+            name: '売上',
+            type: 'bar',
+            data: {{sales}},
+        }]
+    };
+    // use configuration item and data specified to show chart
+    myChart.setOption(option);
+
+    var myChart = echarts.init(document.getElementById('today-category'));
+    var option = {
+        title: {
+            text: '本日の売上 合計 {{sales_str}}円'
+        },
+        tooltip: {},
+        legend: {
+            data: ['Sales']
+        },
+        xAxis: {
+            data: {{category_list|safe}}
+        },
+        yAxis: {},
+        series: [{
+            name: '売上',
+            type: 'bar',
+            data: {{category_sales}},
+        }]
+    };
+    myChart.setOption(option);
+</script>
+
+{% endblock javascript %}

@@ -1,0 +1,18 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>アカウント詳細</h2>
+    <div class="bg-light m-2 p-4">
+        <p>ユーザー名： {{user.username}}</p>
+        <p>生年月日： {{user.birthday}}</p>
+        
+        {% if user.is_superuser %}
+            <p class="text-danger">あなたは管理者権限を与えられています</p>
+        {% endif %}
+        
+        <a href="{% url 'accounts:edit' user.pk %}"><button class="btn btn-primary">ユーザー情報変更</button></a>
+        <a href="{% url 'accounts:password_edit' user.id %}?next={{request.path}}"><button class="btn btn-info">パスワード変更</button></a>
+    </div>  
+</div>
+{% endblock content %}

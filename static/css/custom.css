@@ -1,0 +1,142 @@
+@media screen and (max-width:576px) {
+    .header-list-wrapper{
+        display: none;
+    }
+    .dropdown .dropdown-toggle{
+        display: block;
+    } 
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0px;
+    padding: 0px;
+}
+
+.active{
+    display: block;
+}
+
+.inactive{
+    display: none;
+}
+
+.header {
+    background-color: #def7ff;
+    height: 50px;
+    padding: 0 10px;
+}
+
+.header-title{
+    font-size: 32px;
+    float: left;
+    line-height: 50px;
+}
+
+.header-list-wrapper{
+    list-style: none;
+    float: right;
+    line-height: 50px;
+    margin-bottom: 0;
+}
+
+.header-list-item {
+    float: left;
+    padding-left: 20px;
+}
+
+.dropdown-toggle{
+    display: none;
+    float: right;
+    line-height: 50px;
+}
+
+
+/* product-list  -------------------------- */
+
+.product-list-item{
+    border: 2px solid rgb(136, 173, 241);
+}
+
+.product-image{
+    display: block;
+    padding: 5px;
+    width: 50%;
+    margin: 0 auto;
+}
+/* product-detail -------------------------- */
+.product-detail-wrapper{
+    margin-top: 40px;
+}
+
+.product-detail-description-open{
+
+    text-align: right;
+}
+
+/*cart ---------------------------------------------------*/
+
+.cart-log{
+    border: 2px solid rgb(146, 136, 241)
+}
+
+.cart_item{
+    width: 40%;
+    background-color: aquamarine;
+    margin: 10px 0;
+}
+
+.cart-item-image{
+    height: 100%;
+    width: 100%;
+}
+
+.cart-item-price{
+    float: left;
+}
+
+.cart-item-quantity{
+    display:inline-block;
+}
+
+
+
+/* modal */
+
+.modal{
+    display: none;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: -10px;
+    width: 100%;
+}
+.modal__bg{
+    background: rgba(0,0,0,0.8);
+    height: 100vh;
+    position: absolute;
+    width: 110%;
+}
+.modal__content{
+    background: #fff;
+    width: 60%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    padding: 40px;   
+}
+
+/* edit-index ------------------------------------ */
+
+.edit-product{
+    position: relative;
+}
+
+.divlink{
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    height: 100%;
+    width: 100%;
+}
