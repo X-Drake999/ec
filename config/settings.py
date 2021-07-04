@@ -12,9 +12,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -159,7 +159,28 @@ try:
 except ImportError:
     pass
 
+DEPLOY = True
 
+if DEPLOY:
+    # security.W004
+    SECURE_HSTS_SECONDS = 60
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    # security.W006
+    #SECURE_CONTENT_TYPE_NOSNIFF = True
+    # security.W007
+    #SECURE_BROWSER_XSS_FILTER = True
+    # security.W008
+    #SECURE_SSL_REDIRECT = True
+    # security.W012
+    #SESSION_COOKIE_SECURE = True
+    # security.W016, security.W017
+    #CSRF_COOKIE_SECURE = True
+    #CSRF_COOKIE_HTTPONLY = True
+    # security.W019
+    #X_FRAME_OPTIONS = 'DENY'
+    # security.W021
+    #SECURE_HSTS_PRELOAD = True
+    
 
 
 
