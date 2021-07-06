@@ -7,4 +7,5 @@ python-dateutil
 pytz
 six
 sqlparse
-
+python-dotenv
+django-environ
