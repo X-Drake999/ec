@@ -3,14 +3,16 @@ from django.views.generic import View, UpdateView
 from cart.models import *
 from shop.models import *
 from .forms import *
-from django.db.models import Avg, Count, Min, Sum
+from django.db.models import Avg, Count, Min, Sum, Prefetch
 import datetime
+import calendar
 from dateutil.relativedelta import relativedelta
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.auth.decorators import user_passes_test
 from django.urls import reverse_lazy
+import random
 
-
+User = get_user_model()
 def super_test_func(user):
     return user.is_superuser
 
@@ -53,7 +55,7 @@ class StatsView(UserPassesTestMixin, View):
         d_year = d_today.year
         
         if unit == 'week':
-            purchased_carts = Cart.objects.filter(purchased=True).filter(purchased_date__gte= d_today - relativedelta(days=6),
+            purchased_carts = Cart.objects.filter(purchased=True).filter(purchased_date__gte= d_today.replace(day=1),
                                                                          purchased_date__lte = d_today)
             sales_list = purchased_carts.values('purchased_date').order_by('purchased_date').annotate(total_sale=Sum('total'))
             
@@ -65,9 +67,11 @@ class StatsView(UserPassesTestMixin, View):
         sales_dict = {}
 
         if unit == 'week':
-            for i in range(7):
+            start_day = d_today.replace(day=1)
+            last_day = calendar.monthrange(d_year, d_month)[1]
+            for i in range(last_day):
                 td = datetime.timedelta(days=i)
-                targeted_day = d_today - td
+                targeted_day = start_day + td
                 sales_dict[targeted_day.strftime('%m月%d日')] = 0
             
             sales_dict = dict(sorted(sales_dict.items()))
@@ -98,9 +102,16 @@ class StatsView(UserPassesTestMixin, View):
         for category in category_list:
             category_sales_dict[category.name] = 0
         
-        for targeted_cart in purchased_carts:
+        for targeted_cart in purchased_carts.prefetch_related(Prefetch("cartitem_set", queryset=CartItem.objects.all().select_related('product__category'), to_attr='cartitems')):#SELECT * from cart_item,product,categoryの結合, where cart_item.cart_id IN (purchased_cartsQuerySet内のcart.id全部)
+            for targeted_cart_item in targeted_cart.cartitems: 
+                category_sales_dict[targeted_cart_item.product.category.name] += targeted_cart_item.price * targeted_cart_item.quantity
+        
+        """
+        改良前
+         for targeted_cart in purchased_carts:
             for targeted_cart_item in targeted_cart.item_list():
                 category_sales_dict[targeted_cart_item.product.category.name] += targeted_cart_item.item_total()
+        """
                 
         category_list = list(category_sales_dict.keys())
         category_sales = list(category_sales_dict.values())
@@ -114,6 +125,7 @@ class StatsView(UserPassesTestMixin, View):
         context = {'date':date, 'sales':sales, 'category_list':category_list, 'category_sales':category_sales, 'category_sales_for_pie': category_sales_for_pie, 'message':message}
         
         return render(request, 'staff/stats.html', context)
+
     
 class TodayStatsView(UserPassesTestMixin, View):
     def test_func(self):
@@ -125,7 +137,7 @@ class TodayStatsView(UserPassesTestMixin, View):
             return redirect('shop:product_list')
         
         d_today = datetime.date.today()
-        purchased_carts = Cart.objects.filter(purchased=True).filter(purchased_date = d_today)
+        purchased_carts = Cart.objects.filter(purchased=True, purchased_date=d_today)
         
         if len(purchased_carts) == 0:
             context = {'sales': 0}
@@ -142,7 +154,7 @@ class TodayStatsView(UserPassesTestMixin, View):
             category_sales_dict[category.name] = 0
         
         for targeted_cart in purchased_carts:
-            for targeted_cart_item in targeted_cart.item_list():
+            for targeted_cart_item in targeted_cart.item_list().select_related('product', 'product__category'):#cart_item,product,categoryの結合
                 category_sales_dict[targeted_cart_item.product.category.name] += targeted_cart_item.item_total()
         
 
@@ -172,7 +184,7 @@ class ProductUpdateView(UserPassesTestMixin, UpdateView):
         return self.request.user.is_superuser
 
     model = Product
-    fields = ('name', 'slug', 'image', 'description', 'category', 'price', 'stock', 'available', )
+    fields = ('name', 'image', 'description', 'category', 'price', 'stock', 'available', )
     template_name = 'staff/edit_product.html'
     success_url = reverse_lazy('staff:edit_index')
 
@@ -202,6 +214,40 @@ class UnavailableProductView(UserPassesTestMixin, View):
         else:
             context['message'] = '変更に失敗しました'
             return render(request, 'staff/unavailable.html', context)
+        
+def add_purchase_log(request):
+    
+    if 'num' in request.GET:
+        num = int(request.GET['num'])
+        
+        if num < 1 or 1000 < num:
+            return render(request, 'staff/index.html', {})
+        
+    else:
+        return render(request, 'staff/index.html', {})
+    
+    for _ in range(num):    
+        cart = Cart()
+        cart.user = random.choice(User.objects.all())
+        cart.purchased = True
+
+        td = datetime.timedelta(days=random.randrange(31))
+        cart.purchased_date = datetime.date.today() - td
+
+        cartitem = CartItem()
+        cartitem.product = random.choice(Product.objects.all())
+        cartitem.cart = cart
+        cartitem.quantity = random.randrange(1, 3)
+        cartitem.price = cartitem.product.price
+        cart.save()
+        cartitem.save()
+
+        cart.total = cart.cart_total()
+
+        cart.save()
+    
+    return render(request, 'staff/index.html', {})
+    
     
         
         
