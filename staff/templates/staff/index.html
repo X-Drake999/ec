@@ -3,10 +3,43 @@
 {% block content %}
     <div class="container-fluid mt-2">
         <h1>スタッフ用ページ</h1>
-        <a href="{% url 'staff:new' %}"><button class="btn btn-primary">商品を追加</button></a>
-        <a href="{% url 'staff:edit_index' %}"><button class="btn btn-info">商品を編集</button></a>
-        <a href="{% url 'staff:unavailable' %}"><button class="btn btn-danger">商品を非表示</button></a>
-        <a href="{% url 'staff:stats' 'week' %}"><button class="btn btn-success">分析</button></a>
+
+        <div>     
+            <div class="d-inline-block pb-1">
+                <a href="{% url 'staff:new' %}"><button class="btn btn-primary">商品を追加</button></a>
+            </div>            
+            <div class="d-inline-block pb-1">
+                <a href="{% url 'staff:edit_index' %}"><button class="btn btn-info">商品を編集</button></a>
+            </div>
+            <div class="d-inline-block pb-1">
+                <a href="{% url 'staff:unavailable' %}"><button class="btn btn-danger">商品を非表示</button></a>
+            </div>
+            <div class="d-inline-block pb-1">
+                <a href="{% url 'staff:stats' 'week' %}"><button class="btn btn-success">分析</button></a>                
+            </div>       
+        </div>
+        
+        <div>
+            <form action="{% url 'staff:add_log' %}" method="GET">
+                {% csrf_token %}
+                <label><input type="number" placeholder="件数を入力" name="num"></label>
+                <button class="btn btn-secondary my-0" type="submit">会計履歴を追加</button>
+            </form>
+
+            <form class="form-inline my-2 my-lg-4" action="{% url 'shop:product_list' %}" method="GET">
+                <div class="row">
+                    <div class="col-sm-4 pe-0">
+                        {% csrf_token %}
+                        <!-- name="q" を追加 -->
+                        <input class="form-control mr-sm-2" type="search" placeholder="検索" aria-label="Search" name="q">     
+                    </div>
+                    <div class="col-sm-1 px-0">
+                        <button class="btn btn-secondary my-0" type="submit"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>   
+            </form>
+        </div>
+        
     </div>
     
 {% endblock content %}

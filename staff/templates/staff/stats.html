@@ -3,19 +3,19 @@
 {% block content %}
 <div class="container-fluid mt-2">
     <h1>分析用ページ</h1>
-    <a href="{% url 'staff:today' %}"><button class="btn btn-primary">日間</button></a>
-    <a href="{% url 'staff:stats' 'week' %}"><button class="btn btn-primary">週間</button></a>
+    <a href="{% url 'staff:today' %}"><button class="btn btn-primary">今日</button></a>
+    <a href="{% url 'staff:stats' 'week' %}"><button class="btn btn-primary">日別</button></a>
     <a href="{% url 'staff:stats' 'year' %}"><button class="btn btn-primary">年間</button></a>
     
     <div class="row">
-        <div class="col-6">
-            <div id="week-total" style="width:600px; height:400px;" class="m-5"></div>
+        <div class="col-12">
+            <div id="week-total" style="width:80%; height:400px;" class="m-5"></div>
         </div>
-        <div class="col-6">
-            <div id="week-category" style="width:600px; height:400px;" class="m-5"></div>
-        </div>   
     </div>
     <div class="row">
+        <div class="col-6">
+            <div id="week-category" style="width:600px; height:400px;" class="m-5"></div>
+        </div> 
         <div class="col-6">
             <div id="pie-category" style="width:600px; height:400px;" class="m-5"></div>
         </div> 

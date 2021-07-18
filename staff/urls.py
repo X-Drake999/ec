@@ -6,6 +6,7 @@ app_name = 'staff'
 
 urlpatterns = [
     path('', views.index, name='index'),
+    path('add_log/', views.add_purchase_log, name='add_log'),
     path('edit/<int:pk>/', views.ProductUpdateView.as_view(), name='edit_product'),
     path('edit/', views.edit_index, name='edit_index'),
     path('stats/today/', views.TodayStatsView.as_view(), name='today'),
