@@ -84,7 +84,7 @@ class StatsView(UserPassesTestMixin, View):
                 
                 
         if unit == 'week':
-            message = '週間'
+            message = '日別'
             for v in sales_list:
                 if v['purchased_date'].strftime('%m月%d日') in sales_dict.keys() and v['purchased_date'].year == d_year:
                     sales_dict[v['purchased_date'].strftime('%m月%d日')] += v['total_sale']
@@ -218,6 +218,9 @@ class UnavailableProductView(UserPassesTestMixin, View):
 def add_purchase_log(request):
     
     if 'num' in request.GET:
+        if request.GET['num'] == "":
+            return render(request, 'staff/index.html', {})
+        
         num = int(request.GET['num'])
         
         if num < 1 or 1000 < num:
